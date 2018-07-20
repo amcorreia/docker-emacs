@@ -3,7 +3,7 @@
 # TO_BUILD:       docker build -t amcorreia/docker-emacs .
 # TO_RUN:         docker run -d --rm -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME:/home/user -e DISPLAY=unix$DISPLAY --name emacs amcorreia/docker-emacs
 
-FROM debian:jessie
+FROM debian:stretch
 
 MAINTAINER  Alessandro Madruga Correia <mutley.sandro@gmail.com>
 
@@ -17,12 +17,12 @@ ENV HOME /home/$USER
 
 # Build emacs
 ARG EMACS_REPOSITORY="git://git.sv.gnu.org/emacs.git"
-ARG EMACS_BRANCH="emacs-25"
+ARG EMACS_BRANCH="emacs-26.1"
 
 RUN apt-get update -y && \
     apt-get --yes --quiet --no-install-recommends install git build-essential autoconf automake texinfo libtool \
         texinfo build-essential xorg-dev libgtk2.0-dev libjpeg-dev libncurses5-dev libdbus-1-dev libgif-dev \
-        libtiff-dev libm17n-dev libpng12-dev librsvg2-dev libotf-dev libgnutls28-dev libxml2-dev && \
+        libtiff-dev libm17n-dev librsvg2-dev libotf-dev libgnutls28-dev libxml2-dev && \
     rm -rf -- /var/lib/apt/lists/* && \
     git clone --depth 1 --branch $EMACS_BRANCH $EMACS_REPOSITORY /tmp/emacs && \
     cd /tmp/emacs && \
