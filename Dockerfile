@@ -3,17 +3,10 @@
 # TO_BUILD:       docker build -t amcorreia/docker-emacs .
 # TO_RUN:         docker run -d --rm -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME:/home/user -e DISPLAY=unix$DISPLAY --name emacs amcorreia/docker-emacs
 
-FROM debian:stretch
-
-MAINTAINER  Alessandro Madruga Correia <mutley.sandro@gmail.com>
+FROM debian:stretch as builder
 
 # To avoid problems with Dialog and curses wizards
 ENV DEBIAN_FRONTEND noninteractive
-ENV DISPLAY :0.0
-ENV USER user
-ENV UID 1000
-ENV GID 1000
-ENV HOME /home/$USER
 
 # Build emacs
 ARG EMACS_REPOSITORY="git://git.sv.gnu.org/emacs.git"
@@ -29,8 +22,23 @@ RUN apt-get update -y && \
     ./autogen.sh && \
     ./configure && \
     make -j 16 install && \
-    rm -rf /tmp/emacs && \
-    useradd --uid $UID --create-home --home-dir $HOME --shell /usr/sbin/nologin $USER
+    rm -rf /tmp/emacs 
+
+###########
+
+FROM debian:stretch
+
+MAINTAINER  Alessandro Madruga Correia <mutley.sandro@gmail.com>
+
+ENV DISPLAY :0.0
+ENV USER user
+ENV UID 1000
+ENV GID 1000
+ENV HOME /home/$USER
+
+COPY --from=0 /usr/local /usr/local
+
+RUN useradd --uid $UID --create-home --home-dir $HOME --shell /usr/sbin/nologin $USER
 
 USER $USER
 
