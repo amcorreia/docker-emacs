@@ -22,3 +22,7 @@ $ docker run -it --rm -v $HOME:/home/user -v /tmp/.X11-unix/:/tmp/.X11-unix/ -e 
 ```sh
 $ docker build --no-cache --rm  -t amcorreia/docker-emacs .
 ```
+
+If get segmentation fault because of ASLR, just disable
+
+echo 0 > /proc/sys/kernel/randomize_va_space

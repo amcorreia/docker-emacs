@@ -38,7 +38,12 @@ ENV HOME /home/$USER
 
 COPY --from=0 /usr/local /usr/local
 
-RUN useradd --uid $UID --create-home --home-dir $HOME --shell /usr/sbin/nologin $USER
+RUN useradd --uid $UID --create-home --home-dir $HOME --shell /usr/sbin/nologin $USER && \
+    apt-get update --yes && \
+    apt-get --yes --quiet --no-install-recommends install \
+        libtiff5 libpng16-16 libgif7 libxpm4 libgtk2.0 libotf0 libm17n-0 && \
+    apt-get clean && \
+    rm -rf -- /var/lib/apt/lists/*
 
 USER $USER
 
